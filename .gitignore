@@ -1,0 +1,22 @@
+# Visual Studio / IIS Express
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs y Temporales
+*.log
+*.tmp
+
+# Herramientas locales / Asistentes IA
+.workbuddy-ai/
+
+# Archivos del Sistema Operativo
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
