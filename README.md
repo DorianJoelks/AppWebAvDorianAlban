@@ -1,143 +1,108 @@
-# PoliMusic v1 — Clon de Spotify
+# PoliMusic — Clon de Spotify
 
 > **Proyecto Académico — Aplicaciones Web Avanzadas**  
 > **Autor:** Dorian Albán  
-> **Institución:** Escuela Politécnica Nacional (EPN)  
+> **Institución:** Escuela Politécnica Nacional (EPN)
+
+Repositorio general de **PoliMusic**, una aplicación web de música inspirada en Spotify que evoluciona en tres versiones. Cada versión implementa la misma idea (login, catálogo de canciones y reproductor) con una tecnología y una arquitectura distintas. La paleta de colores se mantiene en todas: **vino, negro y blanco**.
 
 ---
 
-## 🎵 Descripción del Proyecto
+## Versiones
 
-**PoliMusic v1** es una aplicación web inspirada en la interfaz y experiencia de usuario de **Spotify**, desarrollada utilizando tecnologías clásicas robustas en el servidor (**Classic ASP / VBScript**) y un frontend moderno y responsivo con **HTML5 Audio**, **CSS3** y **JavaScript Vanilla**.
-
-La aplicación permite la exploración de canciones, reproducción de audio en tiempo real, gestión de catálogo musical (CRUD) y control de acceso mediante roles de usuario.
-
----
-
-## 🚀 Características Principales
-
-- **Interfaz Estilo Spotify Dark:**
-  - Tema oscuro característico con paleta vino/granate (`#5B0E2D` / `#800020`) y acentos modernos.
-  - Reproductor persistente en la barra inferior con controles de reproducción (Play/Pause, barra de progreso interactiva, control de volumen y tiempo actual/duración).
-  - Búsqueda en tiempo real de canciones por título, artista o álbum.
-  - Diseño responsivo adaptado para escritorio y dispositivos móviles.
-
-- **Autenticación y Seguridad:**
-  - Sistema de inicio de sesión con control de sesiones en ASP.
-  - Roles de usuario: **Administrador** (gestión total de canciones) y **Usuario Estándar** (escucha y catálogo).
-  - Protección de contraseñas mediante hashing (`SHA1` / `HASHBYTES`) y compatibilidad con seed.
-  - Prevención de ataques mediante tokens CSRF y saneamiento de entradas (`HTMLEncode`).
-
-- **Gestión de Canciones (CRUD):**
-  - **Crear y Editar:** Formulario modal para registrar o actualizar canciones sincronizando `TBL_SONG`, `TBL_TRACKLIST` y `TBL_PLAYER`.
-  - **Eliminar:** Borrado transaccional seguro en cascada para mantener la integridad referencial.
-  - **Contador de Reproducciones:** Incremento asíncrono de reproducciones (`PLAYS`) al interactuar con el reproductor.
-  - **Manejo de Assets y Fallbacks:** Detección de existencia de archivos físicos con `FileSystemObject` y asignación dinámica de carátulas.
-
----
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Backend:** Classic ASP (Active Server Pages) con VBScript
-- **Capa de Datos:** ADODB (`MSOLEDBSQL` / `SQLOLEDB`)
-- **Base de Datos:** Microsoft SQL Server (`BDD_PoliMusic`)
-- **Servidor Web:** Internet Information Services (IIS)
-- **Frontend:** HTML5, CSS3 moderno (Flexbox, CSS Grid, Variables CSS), JavaScript (Vanilla ES6+)
-
----
-
-## 🗄️ Modelo de Base de Datos
-
-El script completo de inicialización se encuentra en el archivo [`BDD_PoliMusic.sql`](BDD_PoliMusic.sql).
-
-### Tablas Principales:
-- `TBL_USER`: Usuarios del sistema, roles (`USER_TYPE`), credenciales y avatares.
-- `TBL_SONG`: Canciones registradas y rutas de archivos de audio.
-- `TBL_ALBUM`: Álbumes y carátulas.
-- `TBL_ARTIST`: Artistas del catálogo.
-- `TBL_TRACKLIST`: Relación entre canciones y álbumes.
-- `TBL_PLAYER`: Métricas de reproducción (`PLAYS`).
-- `TBL_PLAYLIST` & `TBL_PLAYLIST_SONG`: Listas de reproducción y sus temas asociados.
-- `TBL_CATALOG`: Catálogo general de géneros y clasificaciones.
-
----
-
-## 👥 Cuentas de Acceso de Prueba
-
-| Usuario | Contraseña | Rol | Descripción |
+| Versión | Carpeta | Tecnología | Arquitectura |
 | :--- | :--- | :--- | :--- |
-| **`userAdmin`** | `12345678` | Administrador | Permisos para agregar, editar y eliminar canciones |
-| **`userNormal`** | `12345678` | Usuario Normal | Permisos de navegación y reproducción de música |
-| **`username1`** | `12345678` | Usuario Normal | Usuario de prueba con contraseña cifrada en SHA1 |
+| **v1** | [`webapppolimusicv1_asp`](webapppolimusicv1_asp) | Classic ASP / VBScript | Páginas `.asp` con includes |
+| **v2** | [`WebAppPoliMusicV2`](WebAppPoliMusicV2) | ASP.NET Web Forms, C# (.NET Framework 2.0) | Un solo proyecto, con carpetas `BLL`, `DAL` y `Entities` |
+| **v3** | `WebAppPoliMusicV3` + capas | ASP.NET Web Forms, C# (.NET Framework 4.8) | **N capas**, en proyectos separados |
 
----
+### v1 — Classic ASP
+Aplicación en **Classic ASP / VBScript** con frontend en HTML5 Audio, CSS3 y JavaScript.
+- Login con sesiones y roles (administrador y usuario estándar).
+- Catálogo de canciones con reproductor persistente y búsqueda en tiempo real.
+- CRUD de canciones (solo administrador) y contador de reproducciones.
+- Acceso a datos con ADODB directamente desde las páginas.
+- Documentación completa, instalación y usuarios de prueba: [README de la v1](webapppolimusicv1_asp/README.md).
 
-## ⚙️ Instalación y Configuración
+### v2 — ASP.NET Web Forms (.NET Framework 2.0)
+Migración a **ASP.NET Web Forms con C#**, en un único proyecto web.
+- Páginas `Login.aspx`, `SignUp.aspx`, `Default.aspx`, `Song.aspx` y `Logout.aspx`, con code-behind en C#.
+- Separación lógica en carpetas dentro del mismo proyecto: `DAL` (ADO.NET con `SqlClient`), `BLL` y `Entities`.
+- `Song.aspx` muestra el listado de canciones con un reproductor.
+- Como las capas viven dentro del proyecto web, no se pueden reutilizar en otras aplicaciones.
 
-### 1. Clonar el Repositorio
-```bash
-git clone https://github.com/DorianJoelks/AppWebAvDorianAlban.git
-cd AppWebAvDorianAlban
-```
-
-### 2. Configurar la Base de Datos (SQL Server)
-1. Abrir **SQL Server Management Studio (SSMS)**.
-2. Ejecutar el script [`BDD_PoliMusic.sql`](BDD_PoliMusic.sql) que:
-   - Crea el usuario/login `usr_polimusic` con clave `Politecnica1`.
-   - Crea la base de datos `BDD_PoliMusic`.
-   - Genera las tablas e inserta los datos iniciales (seed).
-
-### 3. Configurar Conexión en ASP
-Revisar el archivo [`includes/config.asp`](includes/config.asp) y ajustar los parámetros si tu instancia de SQL Server tiene otro nombre:
-```vbscript
-Const DB_SERVER   = "localhost"          ' o "localhost\SQLEXPRESS"
-Const DB_NAME     = "BDD_PoliMusic"
-Const DB_USER     = "usr_polimusic"
-Const DB_PASSWORD = "Politecnica1"
-Const DB_PROVIDER = "MSOLEDBSQL"         ' o "SQLOLEDB"
-```
-
-### 4. Configurar el Sitio en IIS
-1. Habilitar **ASP** en las características de Windows (*Servicios de Internet Information Server -> World Wide Web Services -> Application Development Features -> ASP*).
-2. Crear un sitio o aplicación virtual en IIS apuntando a la carpeta del proyecto.
-3. Asegurar que los tipos MIME para `.mp3` estén configurados (ya definidos en [`web.config`](web.config)).
-4. Acceder en el navegador a `http://localhost:<puerto>/` o `http://localhost:<puerto>/login.asp`.
-
----
-
-## 📁 Estructura del Proyecto
+### v3 — ASP.NET Web Forms en N capas (.NET Framework 4.8)
+Versión actual, con una **arquitectura N-Layer real** en proyectos independientes.
 
 ```plaintext
-webapppolimusicv1_asp/
-├── .gitignore
-├── README.md
-├── BDD_PoliMusic.sql                # Script DDL/DML de la base de datos
-├── web.config                       # Configuración IIS (MIME types, documentos default)
-├── Default.asp                      # Redirección de entrada
-├── index.asp                        # Enrutador principal de sesión
-├── login.asp                        # Pantalla de autenticación
-├── logout.asp                       # Cierre de sesión y limpieza
-├── songs.asp                        # Vista principal del catálogo y reproductor
-├── song_save.asp                    # Procesamiento de alta/edición de canciones
-├── song_delete.asp                  # Procesamiento de baja de canciones
-├── song_play.asp                    # Endpoint para registro de reproducciones
-├── diagnostico.asp                  # Página de diagnóstico de conexión y entorno
-├── preview.html                     # Vista previa estática del diseño
-├── styles.css                       # Hojas de estilo CSS3
-├── player.js                        # Lógica del reproductor y frontend JS
-├── _syntax.js                       # Utilidades auxiliares
-├── includes/
-│   ├── config.asp                   # Constantes globales, rutas y helpers
-│   ├── db.asp                       # Capa de abstracción y conexión ADODB
-│   └── auth.asp                     # Helpers de autenticación, CSRF y control de acceso
-└── SongFilesAndImages_resources/    # Recursos multimedia (audios e imágenes)
-    ├── PlaylistImages/
-    ├── SongFiles/
-    └── UserImages/
+WebAppPoliMusicV3        Presentación: páginas .aspx, Site.Master, code-behind
+        │
+BLL.PoliMusicV3          Lógica de negocio (User, Song)
+        │
+DAL.PoliMusicV3          Acceso a datos con ADO.NET (User, Song)
+        │
+EntityLayer.PoliMusicV3  Entidades, constantes y utilidades (hash de contraseñas)
+```
+
+- Usa la página maestra `Site.Master` con Bootstrap y menú de navegación (Inicio, Canciones, Cerrar sesión).
+- Flujo: **Login → Default → Canciones**. Las páginas que usan la maestra exigen sesión iniciada.
+- `Song.aspx` lista las canciones desde la base de datos en un **GridView** y permite reproducirlas desde un reproductor fijo, con búsqueda y botón «Siguiente».
+- Las capas BLL, DAL y Entity no dependen de la web, por lo que pueden reutilizarse en futuras versiones.
+- La presentación solo llama a la BLL, la BLL solo llama a la DAL, y la DAL es la única que habla con la base de datos.
+
+---
+
+## Estructura del repositorio
+
+```plaintext
+AppWebAvDorianAlban/
+├── SinAppPoliMusic.slnx          # Solución con v2 y v3
+├── webapppolimusicv1_asp/        # v1 — Classic ASP
+├── WebAppPoliMusicV2/            # v2 — Web Forms, un proyecto
+├── WebAppPoliMusicV3/            # v3 — capa de presentación
+├── BLL.PoliMusicV3/              # v3 — lógica de negocio
+├── DAL.PoliMusicV3/              # v3 — acceso a datos
+└── EntityLayer.PoliMusicV3/      # v3 — entidades y utilidades
 ```
 
 ---
 
-## 📄 Licencia
+## Base de datos
+
+Las tres versiones comparten la misma base de datos SQL Server, **`BDD_PoliMusic`**. El script de creación está en [`webapppolimusicv1_asp/BDD_PoliMusic.sql`](webapppolimusicv1_asp/BDD_PoliMusic.sql). Crea el login `usr_polimusic` y las tablas `TBL_USER`, `TBL_SONG`, `TBL_ALBUM`, `TBL_ARTIST`, `TBL_TRACKLIST`, `TBL_PLAYER`, `TBL_PLAYLIST`, `TBL_PLAYLIST_SONG` y `TBL_CATALOG`.
+
+Las versiones 2 y 3 leen la cadena de conexión `BDD_PoliMusicConnectionString` de su `Web.config`:
+
+```xml
+<add name="BDD_PoliMusicConnectionString"
+     connectionString="Data Source=localhost,1434;Initial Catalog=BDD_PoliMusic;User ID=usr_polimusic;Password=Politecnica1"
+     providerName="System.Data.SqlClient"/>
+```
+
+---
+
+## Cómo ejecutar
+
+### v1
+Habilitar ASP en IIS y apuntar un sitio a `webapppolimusicv1_asp`. Los pasos detallados están en su [README](webapppolimusicv1_asp/README.md).
+
+### v2 y v3
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/DorianJoelks/AppWebAvDorianAlban.git
+   ```
+2. Ejecutar el script SQL y ajustar la cadena de conexión si hace falta.
+3. Abrir `SinAppPoliMusic.slnx` en **Visual Studio**.
+4. Clic derecho sobre el proyecto web que se quiere ejecutar → **Establecer como proyecto de inicio**:
+   - `WebAppPoliMusicV3` (puerto 54836), que abre `Login.aspx`.
+   - `WebAppPoliMusicV2` (puerto 64948).
+5. Pulsar **Run / F5**.
+
+> [!NOTE]
+> La solución contiene varias versiones y Visual Studio ejecuta solo el **proyecto de inicio**. Si al pulsar Run se abre una versión anterior, cambia el proyecto de inicio como se indica arriba.
+
+---
+
+## Licencia
 
 Desarrollado con fines académicos para la Escuela Politécnica Nacional (EPN).
